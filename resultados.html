@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados - Sistema de Votación Futurista</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1e1e2f;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #2b2b3c;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .container h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #00ff99;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+        }
+
+        .candidate-img {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            object-fit: cover;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <a href="menu.php">Inicio</a>
+        <a href="votar.php">Votar</a>
+        <a href="logout.php">Cerrar Sesión</a>
+    </div>
+
+    <div class="container">
+        <h1>Resultados de la Votación</h1>
+        <div class="chart-container">
+            <canvas id="resultadosChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chartContainer = document.querySelector('.chart-container');
+            let resultadosChart;
+
+            // Función para cargar datos y actualizar el gráfico
+            function fetchDataAndUpdateChart() {
+                fetch('obtener_resultados.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        const labels = data.map(candidato => candidato.nombre);
+                        const votos = data.map(candidato => parseInt(candidato.votos, 10));
+                        const fotos = data.map(candidato => candidato.foto);
+
+                        // Si el gráfico ya existe, destruirlo antes de crear uno nuevo
+                        if (resultadosChart) {
+                            resultadosChart.destroy();
+                        }
+
+                        const ctx = document.getElementById('resultadosChart').getContext('2d');
+                        resultadosChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Número de Votos',
+                                    data: votos,
+                                    backgroundColor: [
+                                        '#ff6384',
+                                        '#36a2eb',
+                                        '#ffcd56',
+                                        '#4bc0c0',
+                                        '#9966ff',
+                                        '#ff9f40'
+                                    ],
+                                    borderColor: [
+                                        '#ff6384',
+                                        '#36a2eb',
+                                        '#ffcd56',
+                                        '#4bc0c0',
+                                        '#9966ff',
+                                        '#ff9f40'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            color: '#fff' // Color de los números en el eje Y
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            color: '#fff' // Color de los nombres de los candidatos
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        labels: {
+                                            color: '#fff' // Color de la leyenda
+                                        }
+                                    }
+                                }
+                            }
+                        });
+
+                        // Limpiar imágenes previas
+                        const previousImages = document.querySelectorAll('.candidate-img');
+                        previousImages.forEach(img => img.remove());
+
+                        // Colocar las imágenes sobre las barras
+                        data.forEach((candidato, index) => {
+                            const bar = resultadosChart.getDatasetMeta(0).data[index];
+                            const img = new Image();
+                            img.src = candidato.foto;
+                            img.className = 'candidate-img';
+                            img.onload = () => {
+                                chartContainer.appendChild(img);
+                                const x = bar.x - img.width / 2;
+                                const y = bar.y - img.height - 10;
+                                img.style.left = `${x}px`;
+                                img.style.top = `${y}px`;
+                                img.style.position = 'absolute';
+                            };
+                            img.onerror = () => {
+                                console.error(`No se pudo cargar la imagen: ${candidato.foto}`);
+                            };
+                        });
+                    })
+                    .catch(error => console.error('Error al obtener los resultados:', error));
+            }
+
+            // Llamar a la función al cargar la página y cada 5 segundos
+            fetchDataAndUpdateChart();
+            setInterval(fetchDataAndUpdateChart, 5000);
+        });
+    </script>
+
+</body>
+</html>

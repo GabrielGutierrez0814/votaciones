@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Sistema de Votaciones 2024</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1e1e2f;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('https://actualidadlaboral.com/wp-content/uploads/2021/04/persona-votando-1024x576.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .login-container {
+            background-color: rgba(43, 43, 60, 0.8); /* Color de fondo con transparencia para mejor visibilidad */
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-container h1 {
+            text-align: center;
+            font-size: 2rem;
+            color: #00ff99;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .login-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-container form input {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #3b3b4f;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .login-container form input:focus {
+            outline: none;
+            background-color: #4a4a62;
+        }
+
+        .login-container form button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #00ff99;
+            color: #1e1e2f;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-container form button:hover {
+            background-color: #00cc7a;
+        }
+
+        .login-container .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-container .register-link a {
+            color: #00ff99;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-container .register-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h1>Iniciar Sesión</h1>
+        <form action="login.php" method="POST">
+            <input type="email" name="email" placeholder="Correo electrónico" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            <button type="submit">Ingresar</button>
+        </form>
+        <div class="register-link">
+            <p>¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a></p>
+        </div>
+    </div>
+
+</body>
+</html>
